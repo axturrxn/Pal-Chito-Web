@@ -1,31 +1,44 @@
 /* =====================================================
    PAL' CHITO: CASA TALLER · HOJA DE ESTILOS
    Índice:
-   1. Variables (colores y fuentes)
-   2. Base (reset, tipografía, enlaces, accesibilidad)
-   3. Layout general (contenedor, secciones, columnas)
-   4. Encabezado y navegación
-   5. Hero (portada) y encabezado de página
-   6. Botones
-   7. Medios (imágenes, video, placeholders, galería)
-   8. Componentes (badges, línea de tiempo, chips, avisos, tarjetas)
-   9. Pie de página
+   1.  Variables (colores y fuentes)
+   2.  Base (reset, tipografía, enlaces, accesibilidad)
+   3.  Layout general (contenedor, secciones, columnas)
+   4.  Encabezado y navegación
+   5.  Hero (portada) y encabezado de página (con foto)
+   6.  Botones
+   7.  Medios (imágenes, video, placeholders, galería)
+   8.  Componentes (badges, línea de tiempo, chips, avisos, tarjetas)
+   9.  Pie de página
    10. Visor de imagen (dialog)
-   11. Accesibilidad: movimiento reducido
+   11. Créditos
+   12. Accesibilidad: movimiento reducido
    ===================================================== */
 
 
 /* ========== 1. VARIABLES ========== */
 :root {
-  /* Colores */
-  --nogal:   #2a2019;  /* fondo oscuro */
-  --papel:   #e8e3d6;  /* fondo general */
-  --sup:     #f4f1e9;  /* superficies claras (tarjetas, secciones alternas) */
-  --tinta:   #221a13;  /* texto */
-  --cobalto: #274690;  /* acento principal (botones, enlaces) */
-  --azafran: #d9a01e;  /* acento secundario (foco, detalles) */
-  --madera:  #8a5f3c;  /* bordes decorativos */
-  --linea:   #cfc7b4;  /* divisores */
+  /* Colores base.
+     Los nombres --nogal y --madera se conservan por compatibilidad
+     con el resto del código, aunque ya no son cafés. */
+  --nogal:   #1a1446;  /* fondo oscuro: índigo noche (menú, hero, footer) */
+  --papel:   #fff1d6;  /* fondo general: crema maíz */
+  --sup:     #fff9ec;  /* superficies claras (tarjetas, secciones alternas) */
+  --tinta:   #1d1233;  /* texto */
+  --suave:   #4a3b78;  /* texto secundario sobre fondo claro */
+  --suave-os:#d8cdf5;  /* texto secundario sobre fondo oscuro */
+  --linea:   #f2cf9f;  /* divisores */
+
+  /* Colores de sarape */
+  --cobalto: #2447e6;  /* azul eléctrico (enlaces, números de la línea de tiempo) */
+  --magenta: #e4136c;  /* magenta mexicano (botones) */
+  --azafran: #ffc400;  /* amarillo vivo (foco, detalles) */
+  --rojo:    #e5202e;
+  --verde:   #12a150;
+  --madera:  #c2185b;  /* magenta profundo (bordes decorativos) */
+
+  /* Velo sobre las fotos de encabezado (R, G, B del índigo) */
+  --velo: 26, 20, 70;
 
   /* Fuentes */
   --tit: "Bricolage Grotesque", system-ui, sans-serif;  /* títulos */
@@ -69,10 +82,16 @@ a {
   color: var(--cobalto);
 }
 
-/* Foco visible (teclado) */
+/* Foco visible (teclado): azul sobre fondo claro, amarillo sobre fondo oscuro */
 :focus-visible {
-  outline: 3px solid var(--azafran);
+  outline: 3px solid var(--cobalto);
   outline-offset: 3px;
+}
+.top :focus-visible,
+.hero :focus-visible,
+.phead :focus-visible,
+#pie :focus-visible {
+  outline-color: var(--azafran);
 }
 
 /* Enlace "saltar al contenido" */
@@ -203,15 +222,82 @@ nav a[aria-current=page] {
 
 
 /* ========== 5. HERO Y ENCABEZADO DE PÁGINA ========== */
-/* ========== 5. HERO Y ENCABEZADO DE PÁGINA ========== */
-/* Portada (inicio): cabe completa en la primera pantalla */
-.hero {
-  background: var(--nogal);
+
+/* --- Foto de fondo de cada página ---
+   Para saber el nombre de una página: abre el sitio, F12 > Consola y escribe
+   document.body.dataset.pagina
+   Las rutas son relativas a css/styles.css, por eso empiezan con ../
+   Si una página no tiene foto, el encabezado queda en color liso. */
+body[data-pagina="inicio"]      { --hero-img: url("../assets/unity/Patio arbol.png"); }
+body[data-pagina="cultura"]     { --hero-img: url("../assets/referencias/Parachicos.jpeg"); }
+body[data-pagina="taller"]      { --hero-img: url("../assets/referencias/Silla y mueble.jpg"); }
+/* Quita los comentarios y pon tus archivos reales:
+body[data-pagina="proyecto"]    { --hero-img: url("../assets/renders/ARCHIVO.jpg"); }
+body[data-pagina="proceso"]     { --hero-img: url("../assets/referencias/ARCHIVO.jpg"); }
+body[data-pagina="experiencia"] { --hero-img: url("../assets/unity/ARCHIVO.png"); }
+body[data-pagina="creditos"]    { --hero-img: url("../assets/renders/ARCHIVO.jpg"); }
+*/
+
+/* --- Base común: portada (.hero) y encabezado de páginas internas (.phead) --- */
+.hero,
+.phead {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--nogal);     /* respaldo si falta la foto */
   color: #fff;
+
+  /* franja de sarape en el borde inferior */
+  border-bottom: 6px solid;
+  border-image: repeating-linear-gradient(90deg,
+    var(--rojo)    0 40px,  var(--azafran) 40px 80px,
+    var(--verde)  80px 120px, var(--cobalto) 120px 160px,
+    var(--magenta) 160px 200px) 1;
+}
+
+/* Capa 1: la foto, difuminada */
+.hero::before,
+.phead::before {
+  content: "";
+  position: absolute;
+  inset: -24px;                 /* evita bordes claros que deja el blur */
+  background: var(--hero-img, none) center / cover no-repeat;
+  filter: blur(5px) saturate(1.1);
+  z-index: -2;
+}
+
+/* Capa 2: velo índigo, más fuerte donde va el texto */
+.hero::after,
+.phead::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(var(--velo), .92) 0%, rgba(var(--velo), .72) 45%, rgba(var(--velo), .3) 100%),
+    linear-gradient(0deg, rgba(var(--velo), .5), transparent 40%);
+  z-index: -1;
+}
+
+/* Texto sobre la foto */
+.hero h1,
+.phead h1 { text-shadow: 0 2px 18px rgba(0, 0, 0, .45); }
+.hero p,
+.phead p  { text-shadow: 0 1px 10px rgba(0, 0, 0, .5); }
+
+/* Móvil: el texto ocupa todo el ancho, así que el velo es uniforme */
+@media (max-width: 900px) {
+  .hero::after,
+  .phead::after {
+    background: rgba(var(--velo), .84);
+  }
+}
+
+/* --- Portada (inicio): cabe completa en la primera pantalla --- */
+.hero {
   padding: 2rem 0;
   display: flex;
   align-items: center;
-  min-height: calc(100vh - 64px);
+  min-height: calc(100vh - 64px);     /* respaldo para navegadores antiguos */
   min-height: calc(100svh - 64px);
 }
 .hero .wrap {
@@ -239,6 +325,9 @@ nav a[aria-current=page] {
   max-height: 60vh;
   object-fit: cover;
 }
+.hero .media figcaption {
+  color: var(--suave-os);
+}
 @media (min-width: 900px) {
   .hero .wrap {
     grid-template-columns: 1fr 1fr;
@@ -246,10 +335,8 @@ nav a[aria-current=page] {
   }
 }
 
-/* Encabezado de páginas internas */
+/* --- Encabezado de páginas internas --- */
 .phead {
-  background: var(--nogal);
-  color: #fff;
   padding: 3rem 0 2.5rem;
 }
 .phead p {
@@ -257,6 +344,16 @@ nav a[aria-current=page] {
   font-size: 1.15rem;
   margin: 0;
 }
+.phead h1::after {            /* barra amarilla bajo el título */
+  content: "";
+  display: block;
+  width: 72px;
+  height: 4px;
+  margin-top: 14px;
+  background: var(--azafran);
+  border-radius: 2px;
+}
+
 
 /* ========== 6. BOTONES ========== */
 .btns {
@@ -268,12 +365,12 @@ nav a[aria-current=page] {
 
 .btn {
   display: inline-block;
-  background: var(--cobalto);
+  background: var(--magenta);
   color: #fff;
   text-decoration: none;
   padding: .7rem 1.3rem;
   border-radius: 4px;
-  border: 2px solid var(--cobalto);
+  border: 2px solid var(--magenta);
   font: 700 1rem var(--tit);
 }
 .btn:hover {
@@ -304,7 +401,7 @@ nav a[aria-current=page] {
 }
 .media figcaption {
   font-size: .9rem;
-  color: #5a4d3f;
+  color: var(--suave);
   padding-top: .4rem;
 }
 
@@ -320,7 +417,7 @@ nav a[aria-current=page] {
   padding: 1rem;
   border: 2px dashed var(--madera);
   border-radius: 4px;
-  background: repeating-linear-gradient(45deg, #0000 0 10px, #8a5f3c14 10px 11px);
+  background: repeating-linear-gradient(45deg, #0000 0 10px, #c2185b14 10px 11px);
   color: var(--madera);
   font-family: var(--tit);
 }
@@ -329,8 +426,8 @@ nav a[aria-current=page] {
   word-break: break-all;
 }
 .hero .ph {
-  color: #d8b48f;
-  border-color: #d8b48f;
+  color: #ffd34d;
+  border-color: #ffd34d;
 }
 
 /* Galería */
@@ -352,7 +449,7 @@ nav a[aria-current=page] {
   background: var(--linea);
 }
 .badge.en-desarrollo { background: var(--azafran); }
-.badge.completado    { background: #2f7a4d; color: #fff; }
+.badge.completado    { background: #0a7a4a; color: #fff; }
 
 /* Línea de tiempo */
 .tl {
@@ -409,7 +506,7 @@ nav a[aria-current=page] {
   max-width: 68ch;
 }
 .pend {
-  color: #6b5a48;
+  color: var(--suave);
   font-style: italic;
 }
 .card {
@@ -418,7 +515,8 @@ nav a[aria-current=page] {
   padding: 1rem 1.2rem;
   border-radius: 4px;
 }
-/* Equipo (créditos) */
+
+/* Equipo (base, usado por Créditos) */
 .equipo {
   display: grid;
   gap: 1.5rem;
@@ -456,9 +554,7 @@ nav a[aria-current=page] {
 .miembro p  { margin: 0; }
 
 
-
 /* ========== 9. PIE DE PÁGINA GLOBAL ========== */
-
 #pie {
   background: var(--nogal);
   color: var(--papel);
@@ -471,35 +567,44 @@ nav a[aria-current=page] {
   text-decoration: none;
   transition: color .2s ease;
 }
-
 #pie a:hover {
   color: var(--azafran);
 }
 
 /* Distribución principal */
-
 .pie-superior {
   display: grid;
   grid-template-columns: 1.5fr 1fr;
-  gap: 3rem;
+  gap: 2.5rem;
   padding-bottom: 2rem;
 }
 
-/* Identidad */
+/* Navegación en dos columnas */
+.pie-superior .pie-columna:nth-child(2) ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 1rem;
+}
 
+/* Redes sociales */
+.pie-superior .pie-columna:nth-child(3) a {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+/* Identidad */
 .pie-marca {
   display: inline-flex;
   flex-direction: column;
   font: 700 1.8rem var(--tit);
   margin-bottom: .8rem;
 }
-
 .pie-marca span {
   color: var(--azafran);
   font-size: .85rem;
   letter-spacing: .05em;
 }
-
 .pie-identidad p {
   color: var(--papel);
   max-width: 330px;
@@ -507,66 +612,56 @@ nav a[aria-current=page] {
 }
 
 /* Columnas */
-
 .pie-columna h3 {
   color: var(--azafran);
   font-size: 1.05rem;
   margin-bottom: 1rem;
 }
-
 .pie-columna ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
-
 .pie-columna li {
-  margin-bottom: .55rem;
+  margin-bottom: .7rem;
 }
-
 .pie-proximamente {
-  color: #b9aa99;
+  color: var(--suave-os);
   font-style: italic;
 }
 
 /* Instituciones */
-
 .pie-instituciones {
   border-top: 1px solid #ffffff25;
   border-bottom: 1px solid #ffffff25;
   padding: 1.5rem 0;
 }
-
 .pie-instituciones > span {
   display: block;
   font: 600 .85rem var(--tit);
-  color: #cbbba9;
+  color: var(--suave-os);
   margin-bottom: 1rem;
 }
-
 .pie-logos {
   display: flex;
   align-items: center;
   gap: 1rem;
   flex-wrap: wrap;
 }
-
 .pie-logos .media {
   width: auto;
   margin: 0;
 }
-
 .pie-logos .media img {
-  height: 65px;
+  height: 58px;
   width: auto;
-  max-width: 190px;
+  max-width: 165px;
   object-fit: contain;
   background: white;
   border-radius: 4px;
 }
 
 /* Parte inferior */
-
 .pie-inferior {
   display: flex;
   justify-content: space-between;
@@ -575,30 +670,25 @@ nav a[aria-current=page] {
   gap: 1rem;
   padding-top: 1.5rem;
 }
-
 .pie-inferior p {
   margin: 0;
-  color: #cbbba9;
+  color: var(--suave-os);
   font-size: .82rem;
 }
 
 /* Adaptación a móviles */
-
 @media (max-width: 700px) {
   .pie-superior {
     grid-template-columns: 1fr 1fr;
     gap: 2rem 1.5rem;
   }
-
   .pie-identidad {
     grid-column: 1 / -1;
   }
-
   .pie-logos .media img {
     height: 52px;
     max-width: 150px;
   }
-
   .pie-inferior {
     align-items: flex-start;
     flex-direction: column;
@@ -609,12 +699,10 @@ nav a[aria-current=page] {
   .pie-superior {
     grid-template-columns: 1fr;
   }
-
   .pie-identidad {
     grid-column: auto;
   }
 }
-
 
 
 /* ========== 10. VISOR DE IMAGEN (dialog) ========== */
@@ -643,58 +731,16 @@ dialog img {
 }
 
 
-/* ========== 11. MOVIMIENTO REDUCIDO ========== */
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-}
-
-/* Ajustes finales del footer */
-
-.pie-superior {
-  gap: 2.5rem;
-  padding-bottom: 2rem;
-}
-
-/* Navegación en dos columnas */
-.pie-superior .pie-columna:nth-child(2) ul {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: 1rem;
-}
-
-.pie-columna li {
-  margin-bottom: .7rem;
-}
-
-/* Redes sociales */
-.pie-superior .pie-columna:nth-child(3) a {
-  display: inline-flex;
-  align-items: center;
-  gap: .5rem;
-}
-
-/* Logotipos ligeramente más compactos */
-.pie-logos .media img {
-  height: 58px;
-  max-width: 165px;
-}
-
-/* =========================================
-   CRÉDITOS · DISEÑO EDITORIAL
-   ========================================= */
+/* ========== 11. CRÉDITOS ========== */
 
 /* Introducción de las secciones */
-
 .creditos-intro {
   max-width: 680px;
-  color: #655548;
+  color: var(--suave);
   margin-bottom: 1.8rem;
 }
 
-/* EQUIPO */
-
+/* Equipo: tres tarjetas arriba y dos centradas abajo */
 .equipo-creditos {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -702,63 +748,54 @@ dialog img {
   max-width: 960px;
   margin: 0 auto;
 }
-
-/* Tres tarjetas en la primera fila y dos centradas abajo */
-
 .equipo-creditos .miembro {
   grid-column: span 2;
   transition: transform .2s ease, box-shadow .2s ease;
 }
-
 .equipo-creditos .miembro:nth-child(4) {
   grid-column: 2 / span 2;
 }
-
 .equipo-creditos .miembro:nth-child(5) {
   grid-column: 4 / span 2;
 }
-
 .equipo-creditos .miembro:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 20px #2a201914;
+  box-shadow: 0 8px 20px rgba(var(--velo), .18);
 }
 
-.equipo-creditos .foto {
+/* Ilustración completa, centrada y sin recortes */
+.equipo-creditos .miembro .foto {
   aspect-ratio: 4 / 3;
   overflow: hidden;
+  background: #fff;
 }
-
-.equipo-creditos .foto img {
-  transition: transform .3s ease;
-}
-
-.equipo-creditos .miembro:hover .foto img {
-  transform: scale(1.035);
+.equipo-creditos .miembro .foto img {
+  place-self: center;
+  width: 95%;
+  height: 95%;
+  object-fit: contain;
+  object-position: center;
 }
 
 .equipo-creditos .info {
   min-height: 105px;
 }
-
 .equipo-creditos .info h3 {
   font-size: 1.15rem;
   color: var(--tinta);
 }
-
 .equipo-creditos .info p {
-  color: #655548;
+  color: var(--suave);
   font-size: .92rem;
   line-height: 1.5;
 }
 
-/* HERRAMIENTAS */
-
+/* Herramientas */
 .herramientas-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
 }
-
 .herramienta-card {
   display: flex;
   align-items: center;
@@ -769,7 +806,6 @@ dialog img {
   padding: 1.2rem;
   min-height: 110px;
 }
-
 .herramienta-simbolo {
   display: grid;
   place-items: center;
@@ -781,39 +817,33 @@ dialog img {
   color: var(--azafran);
   font: 700 1.5rem var(--tit);
 }
-
 .herramienta-card h3 {
   font-size: 1rem;
   margin: 0 0 .3rem;
 }
-
 .herramienta-card p {
-  color: #655548;
+  color: var(--suave);
   font-size: .82rem;
   line-height: 1.4;
   margin: 0;
 }
 
-/* FUENTES Y RECURSOS */
-
+/* Fuentes y recursos */
 .recursos-lista {
   max-width: 800px;
   padding-left: 1.3rem;
 }
-
 .recursos-lista li {
   padding: .35rem 0;
 }
 
-/* INSTITUCIONES */
-
+/* Instituciones */
 .instituciones-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 230px));
   align-items: center;
   gap: 1.2rem;
 }
-
 .instituciones-grid .media img {
   width: 100%;
   height: 105px;
@@ -824,25 +854,21 @@ dialog img {
   border-radius: 5px;
 }
 
-/* RESPONSIVE */
-
+/* Responsive */
 @media (max-width: 700px) {
   .equipo-creditos {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-
   .equipo-creditos .miembro,
   .equipo-creditos .miembro:nth-child(4),
   .equipo-creditos .miembro:nth-child(5) {
     grid-column: auto;
   }
-
   .equipo-creditos .miembro:last-child:nth-child(odd) {
     grid-column: 1 / -1;
     width: calc(50% - .75rem);
     justify-self: center;
   }
-
   .herramientas-grid {
     grid-template-columns: 1fr;
   }
@@ -852,129 +878,25 @@ dialog img {
   .equipo-creditos {
     grid-template-columns: 1fr;
   }
-
   .equipo-creditos .miembro,
   .equipo-creditos .miembro:last-child:nth-child(odd) {
     grid-column: auto;
     width: 100%;
   }
-
   .instituciones-grid {
     grid-template-columns: 1fr;
     max-width: 260px;
   }
 }
 
-/* Accesibilidad: evitar animaciones innecesarias */
 
+/* ========== 12. MOVIMIENTO REDUCIDO ========== */
 @media (prefers-reduced-motion: reduce) {
-  .equipo-creditos .miembro,
-  .equipo-creditos .foto img {
-    transition: none;
+  html {
+    scroll-behavior: auto;
   }
-}
-
-.equipo-creditos .foto img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center;
-}
-
-  /* CRÉDITOS: MOSTRAR ILUSTRACIONES COMPLETAS */
-
-.equipo-creditos .miembro .foto {
-  display: grid !important;
-  width: 100%;
-  height: auto !important;
-  aspect-ratio: 4 / 3;
-  overflow: hidden;
-  background: #fff;
-}
-
-.equipo-creditos .miembro .foto > * {
-  grid-area: 1 / 1;
-}
-
-.equipo-creditos .miembro .foto img {
-  display: block !important;
-  width: 95% !important;
-  height: 95% !important;
-  max-width: 100% !important;
-  max-height: 100% !important;
-  object-fit: contain !important;
-  object-position: center center !important;
-  transform: none !important;
-}
-/* =========================================
-   ENCABEZADOS CON FOTO (blur + velo)
-   ========================================= */
-
-/* Foto por página: ajusta los nombres de ruta y de archivo a los tuyos.
-   Las rutas son relativas a css/styles.css, por eso empiezan con ../ */
-body[data-pagina="inicio"]      { --hero-img: url("../assets/unity/Patio arbol.png"); }
-body[data-pagina="proyecto"]    { --hero-img: url("../assets/renders/NOMBRE-DE-TU-ARCHIVO.jpg"); }
-body[data-pagina="proceso"]     { --hero-img: url("../assets/referencias/NOMBRE-DE-TU-ARCHIVO.jpg"); }
-body[data-pagina="taller"]      { --hero-img: url("../assets/renders/NOMBRE-DE-TU-ARCHIVO.jpg"); }
-body[data-pagina="experiencia"] { --hero-img: url("../assets/unity/NOMBRE-DE-TU-ARCHIVO.png"); }
-body[data-pagina="cultura"]     { --hero-img: url("../assets/referencias/Parachicos.jpeg"); }
-body[data-pagina="creditos"]    { --hero-img: url("../assets/renders/NOMBRE-DE-TU-ARCHIVO.jpg"); }
-
-.hero,
-.phead {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  /* franja de sarape al borde inferior (borra estas 2 líneas si no te gusta) */
-  border-bottom: 6px solid;
-  border-image: repeating-linear-gradient(90deg,
-    #c8102e 0 40px, var(--azafran) 40px 80px, #2f7a4d 80px 120px,
-    var(--cobalto) 120px 160px, #c2185b 160px 200px) 1;
-}
-
-/* Capa 1: la foto, difuminada */
-.hero::before,
-.phead::before {
-  content: "";
-  position: absolute;
-  inset: -24px;                    /* evita bordes claros que deja el blur */
-  background: var(--hero-img, none) center / cover no-repeat;
-  filter: blur(5px) saturate(1.1);
-  z-index: -2;
-}
-
-/* Capa 2: velo nogal, más fuerte donde va el texto */
-.hero::after,
-.phead::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(90deg, rgba(42,32,25,.94) 0%, rgba(42,32,25,.78) 45%, rgba(42,32,25,.4) 100%),
-    linear-gradient(0deg, rgba(42,32,25,.55), transparent 40%);
-  z-index: -1;
-}
-
-/* Texto: sombra suave y barra azafrán bajo el título de páginas internas */
-.hero h1,
-.phead h1 { text-shadow: 0 2px 18px rgba(0,0,0,.45); }
-.hero p,
-.phead p  { text-shadow: 0 1px 10px rgba(0,0,0,.5); }
-
-.phead h1::after {
-  content: "";
-  display: block;
-  width: 72px;
-  height: 4px;
-  margin-top: 14px;
-  background: var(--azafran);
-  border-radius: 2px;
-}
-
-/* Móvil: el texto ocupa todo el ancho, así que el velo es uniforme */
-@media (max-width: 900px) {
-  .hero::after,
-  .phead::after {
-    background: rgba(42,32,25,.84);
+  #pie a,
+  .equipo-creditos .miembro {
+    transition: none;
   }
 }
