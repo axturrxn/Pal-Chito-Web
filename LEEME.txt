@@ -1,0 +1,15 @@
+DÓNDE COLOCAR TUS RECURSOS (sin tocar código si usas estos nombres)
+Cada archivo puede ser .jpg, .png, .webp (o .svg para logos). Si existe, aparece solo; si no, se muestra un espacio con etiqueta.
+
+logos/        logo-pal-chito, logo-institucion-1, logo-institucion-2
+renders/      taller-vista-general, taller-interior-01, taller-patio-01, mascara-parachico-01, herramientas-mesa-01,
+              interior-pared-01..04, patio-01, mobiliario-01, herramientas-01, asset-01..03, modelado-captura-01,
+              texturas-captura-01, entorno-avance-01, comparacion-modelo-01, comparacion-final-01
+bocetos/      boceto-taller-01
+ortograficas/ ortografica-mascara
+unity/        unity-escena-01, unity-pruebas-01, unity-entorno-01, unity-interfaz-01
+referencias/  investigacion-moodboard, referencia-01, referencia-02, comparacion-referencia-01
+videos/       demo-unity.mp4 (luego escribe su ruta en content.js: exp.video.src)
+
+Para agregar o quitar imágenes, o cambiar nombres/proporciones: edita js/content.js con S("etiqueta","ruta","4/3").
+Las imágenes conservan su proporción original: nunca se recortan ni se estiran.
