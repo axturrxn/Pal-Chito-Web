@@ -17,32 +17,33 @@
 
 
 /* ========== 1. VARIABLES ========== */
+
+
+
 :root {
-  /* Colores base.
-     Los nombres --nogal y --madera se conservan por compatibilidad
-     con el resto del código, aunque ya no son cafés. */
-  --nogal:   #1a1446;  /* fondo oscuro: índigo noche (menú, hero, footer) */
-  --papel:   #fff1d6;  /* fondo general: crema maíz */
-  --sup:     #fff9ec;  /* superficies claras (tarjetas, secciones alternas) */
-  --tinta:   #1d1233;  /* texto */
-  --suave:   #4a3b78;  /* texto secundario sobre fondo claro */
-  --suave-os:#d8cdf5;  /* texto secundario sobre fondo oscuro */
-  --linea:   #f2cf9f;  /* divisores */
+  /* COLORES BASE */
+  --nogal:    #263338;
+  --papel:    #FFFFFF;
+  --sup:      #FAF5F0;
+  --tinta:    #263338;
+  --suave:    #68716E;
+  --suave-os: #F3E7DF;
+  --linea:    #E7D8CF;
 
-  /* Colores de sarape */
-  --cobalto: #2447e6;  /* azul eléctrico (enlaces, números de la línea de tiempo) */
-  --magenta: #e4136c;  /* magenta mexicano (botones) */
-  --azafran: #ffc400;  /* amarillo vivo (foco, detalles) */
-  --rojo:    #e5202e;
-  --verde:   #12a150;
-  --madera:  #c2185b;  /* magenta profundo (bordes decorativos) */
+  /* PALETA ORIGINAL RECOMENDADA */
+  --cobalto:  #91A88F;
+  --magenta:  #D83D58;
+  --azafran:  #E9B99D;
+  --rojo:     #D87979;
+  --verde:    #91A88F;
+  --madera:   #E9B99D;
 
-  /* Velo sobre las fotos de encabezado (R, G, B del índigo) */
-  --velo: 26, 20, 70;
+  /* VELO PARA FOTOGRAFÍAS */
+  --velo: 38, 51, 56;
 
-  /* Fuentes */
-  --tit: "Bricolage Grotesque", system-ui, sans-serif;  /* títulos */
-  --txt: "Literata", Georgia, serif;                    /* texto corrido */
+  /* TIPOGRAFÍAS */
+  --tit: "Bricolage Grotesque", system-ui, sans-serif;
+  --txt: "Literata", Georgia, serif;
 }
 
 
@@ -267,28 +268,47 @@ body[data-pagina="creditos"]    { --hero-img: url("../assets/renders/ARCHIVO.jpg
 }
 
 /* Capa 2: velo índigo, más fuerte donde va el texto */
+
+
 .hero::after,
 .phead::after {
   content: "";
   position: absolute;
   inset: 0;
+
   background:
-    linear-gradient(90deg, rgba(var(--velo), .92) 0%, rgba(var(--velo), .72) 45%, rgba(var(--velo), .3) 100%),
-    linear-gradient(0deg, rgba(var(--velo), .5), transparent 40%);
+    linear-gradient(
+      90deg,
+      rgba(var(--velo), .60) 0%,
+      rgba(var(--velo), .30) 55%,
+      rgba(var(--velo), .05) 100%
+    ),
+    linear-gradient(
+      0deg,
+      rgba(var(--velo), .15),
+      transparent 50%
+    );
+
   z-index: -1;
 }
 
+
 /* Texto sobre la foto */
 .hero h1,
-.phead h1 { text-shadow: 0 2px 18px rgba(0, 0, 0, .45); }
-.hero p,
-.phead p  { text-shadow: 0 1px 10px rgba(0, 0, 0, .5); }
+.phead h1 {
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.45);
+}
 
-/* Móvil: el texto ocupa todo el ancho, así que el velo es uniforme */
+.hero p,
+.phead p {
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Móvil */
 @media (max-width: 900px) {
   .hero::after,
   .phead::after {
-    background: rgba(var(--velo), .84);
+    background: rgba(var(--velo), 0.84);
   }
 }
 
@@ -433,11 +453,19 @@ body[data-pagina="creditos"]    { --hero-img: url("../assets/renders/ARCHIVO.jpg
 /* Galería */
 .gal {
   display: grid;
-  gap: 1.25rem;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  align-items: start;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  max-width: 820px;
 }
 
+.gal .media img,
+.gal .media .ph {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  height: auto;
+  object-fit: cover;
+  display: block;
+}
 
 /* ========== 8. COMPONENTES ========== */
 /* Badges de estado */
@@ -730,6 +758,34 @@ dialog img {
   cursor: pointer;
 }
 
+/* BOTÓN X PARA CERRAR EL VISOR */
+#visor .cerrar {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+
+  border: none;
+  border-radius: 50%;
+  background: var(--rojo);
+  color: #fff;
+
+  font-family: Arial, sans-serif;
+  font-size: 30px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 20;
+
+  transition: transform .2s ease, background .2s ease;
+}
+
+#visor .cerrar:hover {
+  background: var(--magenta);
+  transform: scale(1.1);
+}
 
 /* ========== 11. CRÉDITOS ========== */
 
@@ -898,5 +954,117 @@ dialog img {
   #pie a,
   .equipo-creditos .miembro {
     transition: none;
+  }
+}
+
+
+/* =========================================
+   MARCOS PARA FOTOGRAFÍAS
+   ========================================= */
+
+/* Fotografías de las etapas del proceso */
+.tl .media img {
+  border: 2px solid var(--linea);
+  border-radius: 6px;
+  box-shadow: 0 3px 10px rgba(var(--velo), 0.10);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+/* Fotografías de las galerías */
+.gal .media img {
+  border: 2px solid var(--linea);
+  border-radius: 6px;
+  box-shadow: 0 3px 10px rgba(var(--velo), 0.10);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+/* Efecto al pasar el cursor */
+.tl .media img:hover,
+.gal .media img:hover {
+  transform: translateY(-3px);
+  border-color: var(--rojo);
+  box-shadow: 0 6px 16px rgba(var(--velo), 0.16);
+}
+
+/* Evitar animaciones si el usuario las desactiva */
+@media (prefers-reduced-motion: reduce) {
+  .tl .media img,
+  .gal .media img {
+    transition: none;
+  }
+
+  .tl .media img:hover,
+  .gal .media img:hover {
+    transform: none;
+  }
+}
+/* =========================================
+   VISOR DE IMÁGENES CON NAVEGACIÓN
+   ========================================= */
+
+#visor {
+  position: relative;
+}
+
+.visor-controles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+}
+
+.visor-controles button {
+  pointer-events: auto;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: var(--rojo);
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  transition: transform .2s ease, background .2s ease;
+}
+
+.visor-controles button:hover {
+  background: var(--magenta);
+  transform: scale(1.1);
+}
+
+.visor-controles button[hidden] {
+  display: none;
+}
+
+.visor-contador {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(38, 51, 56, .85);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font: 600 13px var(--tit);
+  pointer-events: none;
+}
+
+@media (max-width: 600px) {
+  .visor-controles {
+    padding: 0 6px;
+  }
+
+  .visor-controles button {
+    width: 38px;
+    height: 38px;
+    font-size: 17px;
   }
 }

@@ -535,30 +535,104 @@ addEventListener("error", e => {
 }, true);
 
 
-/* ---------------------------------------------------------------------
-   9. VISOR DE IMÁGENES Y MENÚ MÓVIL
-   --------------------------------------------------------------------- */
+// 9- VISOR DE IMÁGENES CON NAVEGACIÓN
+const visor = $("#visor");
+const imagenVisor = $("img", visor);
 
-// Clic en una imagen: se abre ampliada. Clic en "Cerrar" o fuera: se cierra.
+let imagenesVisor = [];
+let indiceVisor = 0;
+
+// Crear controles de navegación
+const controles = document.createElement("div");
+controles.className = "visor-controles";
+
+controles.innerHTML = `
+  <button class="visor-anterior" type="button" aria-label="Imagen anterior">
+    &#10094;
+  </button>
+
+  <button class="visor-siguiente" type="button" aria-label="Imagen siguiente">
+    &#10095;
+  </button>
+
+  <span class="visor-contador" aria-live="polite"></span>
+`;
+
+visor.append(controles);
+
+const anterior = $(".visor-anterior", visor);
+const siguiente = $(".visor-siguiente", visor);
+const contador = $(".visor-contador", visor);
+
+// Mostrar una imagen según su posición
+function mostrarImagen(indice) {
+  if (!imagenesVisor.length) return;
+
+  indiceVisor = (indice + imagenesVisor.length) % imagenesVisor.length;
+
+  const imagen = imagenesVisor[indiceVisor];
+
+  imagenVisor.src = imagen.currentSrc || imagen.src;
+  imagenVisor.alt = imagen.alt;
+
+  contador.textContent = `${indiceVisor + 1} / ${imagenesVisor.length}`;
+
+  const hayVarias = imagenesVisor.length > 1;
+  anterior.hidden = !hayVarias;
+  siguiente.hidden = !hayVarias;
+}
+
+// Abrir el visor desde cualquier imagen de la página
 document.addEventListener("click", e => {
-  const el = e.target;
+  const imagen = e.target.closest("img[data-zoom]");
 
-  if (el.matches("img[data-zoom]")) {
-    const visor = $("#visor");
-    $("img", visor).src = el.currentSrc || el.src;
-    $("img", visor).alt = el.alt;
+  if (imagen) {
+    imagenesVisor = Array.from(
+      $("#app").querySelectorAll("img[data-zoom]")
+    );
+
+    indiceVisor = imagenesVisor.indexOf(imagen);
+
+    mostrarImagen(indiceVisor);
     visor.showModal();
-  } else if (el.matches(".cerrar") || el.id == "visor") {
-    $("#visor").close();
   }
 });
 
-// Botón "Menú" en pantallas pequeñas
-$(".burger").onclick = e => {
-  const abierto = $("#nav").classList.toggle("abierto");
-  e.target.setAttribute("aria-expanded", abierto);
-};
+// Navegación con botones
+anterior.addEventListener("click", () => {
+  mostrarImagen(indiceVisor - 1);
+});
 
+siguiente.addEventListener("click", () => {
+  mostrarImagen(indiceVisor + 1);
+});
+
+// Cerrar el visor
+document.addEventListener("click", e => {
+  if (e.target.closest(".cerrar")) {
+    visor.close();
+  }
+});
+
+// Cerrar al hacer clic fuera de la imagen
+visor.addEventListener("click", e => {
+  if (e.target === visor) {
+    visor.close();
+  }
+});
+
+// Navegación con teclado
+document.addEventListener("keydown", e => {
+  if (!visor.open) return;
+
+  if (e.key === "ArrowLeft") {
+    mostrarImagen(indiceVisor - 1);
+  }
+
+  if (e.key === "ArrowRight") {
+    mostrarImagen(indiceVisor + 1);
+  }
+});
 
 /* ---------------------------------------------------------------------
    10. ARRANQUE
