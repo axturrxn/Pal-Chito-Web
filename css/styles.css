@@ -459,15 +459,21 @@ body[data-pagina="creditos"]    { --hero-img: url("../assets/logos/Carmesi Logo 
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 12px;
-  max-width: 820px;
+  max-width: 1000px;
+  align-items: start;          /* cada tarjeta mide lo suyo, sin estirarse */
 }
 
-.gal .media img,
-.gal .media .ph {
+.gal > * {
+  min-width: 0;                /* evita que una foto grande ensanche su columna */
+}
+
+.gal img,
+.gal .ph {
   width: 100%;
-  aspect-ratio: 4 / 3;
   height: auto;
-  object-fit: cover;
+  max-height: none;            /* anula límites de altura de otras reglas */
+  aspect-ratio: 4 / 3;         /* todas con la misma proporción */
+  object-fit: cover;           /* recorta en vez de deformar */
   display: block;
 }
 
