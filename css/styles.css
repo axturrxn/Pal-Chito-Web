@@ -228,16 +228,20 @@ nav a[aria-current=page] {
    Para saber el nombre de una página: abre el sitio, F12 > Consola y escribe
    document.body.dataset.pagina
    Las rutas son relativas a css/styles.css, por eso empiezan con ../
-   Si una página no tiene foto, el encabezado queda en color liso. */
-body[data-pagina="inicio"]      { --hero-img: url("../assets/unity/Patio arbol.png"); }
-body[data-pagina="cultura"]     { --hero-img: url("../assets/referencias/Parachicos.jpeg"); }
-body[data-pagina="taller"]      { --hero-img: url("../assets/referencias/Silla y mueble.jpg"); }
-/* Quita los comentarios y pon tus archivos reales:
-body[data-pagina="proyecto"]    { --hero-img: url("../assets/renders/ARCHIVO.jpg"); }
-body[data-pagina="proceso"]     { --hero-img: url("../assets/referencias/ARCHIVO.jpg"); }
-body[data-pagina="experiencia"] { --hero-img: url("../assets/unity/ARCHIVO.png"); }
-body[data-pagina="creditos"]    { --hero-img: url("../assets/renders/ARCHIVO.jpg"); }
-*/
+   Si una página no tiene foto, el encabezado queda en color liso.
+
+   Ajustes opcionales por página:
+   --hero-size: tamaño (cover, 100%, 80%, 60%...)
+   --hero-pos:  posición (center, 50% 30%, center top...)
+   Si no los pones, usa cover y center. */
+body[data-pagina="inicio"]      { --hero-img: url("../assets/unity/Patio arbol.png"); --hero-size: cover; --hero-pos: 50% 40%; }
+body[data-pagina="proyecto"]    { --hero-img: url("../assets/referencias/Parachicos.jpeg");   --hero-size: cover; --hero-pos: 100% 25%; }
+body[data-pagina="proceso"]     { --hero-img: url("../assets/referencias/Silla y mueble.jpg");   --hero-size: cover; --hero-pos: 100% 85%; }
+body[data-pagina="taller"]      { --hero-img: url("../assets/unity/Patio toma.png");   --hero-size: cover; --hero-pos: 10% 15%; }
+body[data-pagina="experiencia"] { --hero-img: url("../assets/referencias/Silla y mueble.jpg");   --hero-size: cover; --hero-pos: 100% 85%; }
+body[data-pagina="cultura"]     { --hero-img: url("../assets/referencias/Parachicos.jpeg");   --hero-size: cover; --hero-pos: 100% 25%; }
+body[data-pagina="creditos"]    { --hero-img: url("../assets/logos/Carmesi Logo 1.png");  --hero-size: cover; --hero-pos: 100% 85%; }
+
 
 /* --- Base común: portada (.hero) y encabezado de páginas internas (.phead) --- */
 .hero,
@@ -262,14 +266,15 @@ body[data-pagina="creditos"]    { --hero-img: url("../assets/renders/ARCHIVO.jpg
   content: "";
   position: absolute;
   inset: -24px;                 /* evita bordes claros que deja el blur */
-  background: var(--hero-img, none) center / cover no-repeat;
+  background-image: var(--hero-img, none);
+  background-size: var(--hero-size, cover);     /* ← tamaño */
+  background-position: var(--hero-pos, center); /* ← posición */
+  background-repeat: no-repeat;
   filter: blur(5px) saturate(1.1);
   z-index: -2;
 }
 
 /* Capa 2: velo índigo, más fuerte donde va el texto */
-
-
 .hero::after,
 .phead::after {
   content: "";
@@ -373,7 +378,6 @@ body[data-pagina="creditos"]    { --hero-img: url("../assets/renders/ARCHIVO.jpg
   background: var(--azafran);
   border-radius: 2px;
 }
-
 
 /* ========== 6. BOTONES ========== */
 .btns {
