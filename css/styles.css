@@ -37,6 +37,8 @@
   --rojo:     #D87979;
   --verde:    #91A88F;
   --madera:   #E9B99D;
+  --lienzo: #FFFFFF;           /* fondo general de la página */
+  color-scheme: light dark;
 
   /* VELO PARA FOTOGRAFÍAS */
   --velo: 38, 51, 56;
@@ -44,6 +46,28 @@
   /* TIPOGRAFÍAS */
   --tit: "Bricolage Grotesque", system-ui, sans-serif;
   --txt: "Literata", Georgia, serif;
+}
+
+@media (max-width: 900px) {
+  .hero::before,
+  .phead::before {
+    inset: 0;
+    filter: none;
+  }
+  .hero::after,
+  .phead::after {
+    background: rgba(var(--velo), 0.45);
+  }
+}
+html[data-tema="light"] { color-scheme: light; }
+
+html[data-tema="dark"] {
+  color-scheme: dark;
+  --lienzo: #1B2427;
+  --sup:    #243136;
+  --tinta:  #EEE7E1;
+  --suave:  #A9B4B1;
+  --linea:  #38474D;
 }
 
 
@@ -58,7 +82,7 @@ html {
 
 body {
   margin: 0;
-  background: var(--papel);
+  background: var(--lienzo);   /* antes: var(--papel) */
   color: var(--tinta);
   font: 1.05rem/1.7 var(--txt);
 }
@@ -486,7 +510,7 @@ body[data-pagina="creditos"]    { --hero-img: url("../assets/logos/Carmesi Logo 
   font: 700 .8rem var(--tit);
   background: var(--linea);
 }
-.badge.en-desarrollo { background: var(--azafran); }
+.badge.en-desarrollo { background: var(--azafran); color: #263338; }
 .badge.completado    { background: #0a7a4a; color: #fff; }
 
 /* Línea de tiempo */
@@ -1018,7 +1042,7 @@ dialog img {
    VISOR DE IMÁGENES CON NAVEGACIÓN
    ========================================= */
 
-   
+
 .visor-controles {
   position: absolute;
   inset: 0;
@@ -1093,3 +1117,40 @@ dialog img {
 #visor::backdrop { background: rgba(0, 0, 0, .85); }
 
 img[data-zoom] { cursor: zoom-in; } /* también ayuda a que iOS detecte el toque */
+
+@media (max-width: 900px) {
+  .hero,
+  .phead {
+    background-color: var(--nogal);
+    background-image:
+      linear-gradient(rgba(var(--velo), .5), rgba(var(--velo), .5)),
+      var(--hero-img, none);
+    background-size: cover, var(--hero-size, cover);
+    background-position: center, var(--hero-pos, center);
+    background-repeat: no-repeat;
+  }
+
+  .hero::before,
+  .hero::after,
+  .phead::before,
+  .phead::after {
+    content: none;
+  }
+}
+.acciones { display: flex; align-items: center; gap: .5rem; }
+
+.tema {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: none;
+  color: #fff;
+  border: 1px solid #fff6;
+  border-radius: 4px;
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.tema:hover { background: #ffffff1f; }

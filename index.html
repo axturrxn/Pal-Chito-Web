@@ -1,16 +1,31 @@
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
 <title>Pal’ Chito: Casa Taller</title>
 <meta name="description" content="Proyecto integrador: taller artesanal 3D inspirado en las máscaras de Parachico de Chiapa de Corzo.">
+<script>
+(function () {
+  var t = null;
+  try { t = localStorage.getItem("tema"); } catch (e) {}
+  if (t !== "light" && t !== "dark") {
+    t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+  document.documentElement.dataset.tema = t;
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=Literata:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=3"></head>
+<link rel="stylesheet" href="css/styles.css?v=4"></head>
 <body>
 <a class="skip" href="#app">Saltar al contenido</a>
 <header class="top"><div class="wrap bar">
  <a class="brand" href="#/" id="marca"></a>
- <button class="burger" aria-expanded="false" aria-controls="nav">Menú</button>
+ 
  <nav id="nav" aria-label="Principal"></nav>
+ <div class="acciones">
+  <button class="tema" id="tema" type="button" aria-label="Cambiar a modo oscuro">🌙</button>
+  <button class="burger" aria-expanded="false" aria-controls="nav">Menú</button>
+ </div>
 </div></header>
 <main id="app"></main>
 <footer id="pie"></footer>
@@ -33,5 +48,5 @@
 <script src="js/contenido/creditos.js"></script>
 
 <script src="js/app.js?v=3"></script>
-<script src="js/pagina.js?v=3"></script>
+<script src="js/pagina.js?v=4"></script>
 </body></html>
