@@ -663,24 +663,6 @@ document.addEventListener("click", e => {
   }
 });
 
-// Menú móvil: abrir/cerrar con el botón hamburguesa
-document.addEventListener("click", e => {
-  const burger = e.target.closest(".burger");
-  const nav = $("#nav");
-
-  if (burger) {
-    const abierto = nav.classList.toggle("abierto");
-    burger.setAttribute("aria-expanded", abierto);
-    return;
-  }
-
-  // Cerrar al tocar un enlace del menú o al tocar fuera de él
-  if (e.target.closest("#nav a") || !e.target.closest("#nav")) {
-    nav.classList.remove("abierto");
-    $(".burger")?.setAttribute("aria-expanded", "false");
-  }
-});
-
 /* ---------------------------------------------------------------------
    10. ARRANQUE
    --------------------------------------------------------------------- */
