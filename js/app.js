@@ -493,10 +493,11 @@ function mostrarPagina() {
   const nombreMenu = NAV.find(n => n[0] == pagina)[1];
   document.title = (pagina == "inicio" ? "" : nombreMenu + " · ") + "Pal’ Chito: Casa Taller";
 
+
   // Cerrar menú móvil, subir al inicio y enfocar el título (accesibilidad)
   $("#nav").classList.remove("abierto");
   $(".burger").setAttribute("aria-expanded", "false");
-  scrollTo(0, 0);
+  scrollTo({ top: 0, left: 0, behavior: "instant" });
   const titulo = $("h1");
   if (titulo) titulo.focus({ preventScroll: true });
 }
@@ -563,6 +564,16 @@ visor.append(controles);
 const anterior = $(".visor-anterior", visor);
 const siguiente = $(".visor-siguiente", visor);
 const contador = $(".visor-contador", visor);
+visor.addEventListener("close", () => { document.body.style.overflow = ""; });
+const abrirOriginal = visor.showModal.bind(visor);
+visor.showModal = () => { document.body.style.overflow = "hidden"; abrirOriginal(); };
+
+let toqueX = 0;
+visor.addEventListener("touchstart", e => { toqueX = e.touches[0].clientX; }, { passive: true });
+visor.addEventListener("touchend", e => {
+  const dx = e.changedTouches[0].clientX - toqueX;
+  if (Math.abs(dx) > 50) mostrarImagen(indiceVisor + (dx < 0 ? 1 : -1));
+});
 
 // Mostrar una imagen según su posición
 function mostrarImagen(indice) {
@@ -631,6 +642,42 @@ document.addEventListener("keydown", e => {
 
   if (e.key === "ArrowRight") {
     mostrarImagen(indiceVisor + 1);
+  }
+});
+
+// Menú móvil: abrir/cerrar con el botón hamburguesa
+document.addEventListener("click", e => {
+  const burger = e.target.closest(".burger");
+  const nav = $("#nav");
+
+  if (burger) {
+    const abierto = nav.classList.toggle("abierto");
+    burger.setAttribute("aria-expanded", abierto);
+    return;
+  }
+
+  // Cerrar al tocar un enlace del menú o al tocar fuera de él
+  if (e.target.closest("#nav a") || !e.target.closest("#nav")) {
+    nav.classList.remove("abierto");
+    $(".burger")?.setAttribute("aria-expanded", "false");
+  }
+});
+
+// Menú móvil: abrir/cerrar con el botón hamburguesa
+document.addEventListener("click", e => {
+  const burger = e.target.closest(".burger");
+  const nav = $("#nav");
+
+  if (burger) {
+    const abierto = nav.classList.toggle("abierto");
+    burger.setAttribute("aria-expanded", abierto);
+    return;
+  }
+
+  // Cerrar al tocar un enlace del menú o al tocar fuera de él
+  if (e.target.closest("#nav a") || !e.target.closest("#nav")) {
+    nav.classList.remove("abierto");
+    $(".burger")?.setAttribute("aria-expanded", "false");
   }
 });
 
