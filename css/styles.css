@@ -333,54 +333,43 @@ body[data-pagina="creditos"]    { --hero-img: url("../assets/logos/Carmesi Logo 
   text-shadow: 0 1px 10px rgba(0, 0, 0, 0.5);
 }
 
-/* Móvil */
+/* ===== FONDOS DE CABECERA EN MÓVIL (sin variables) ===== */
 @media (max-width: 900px) {
-  .hero::after,
-  .phead::after {
-    background: rgba(var(--velo), 0.84);
+  .hero,
+  .phead {
+    background-color: var(--nogal);
+    background-repeat: no-repeat;
+    background-size: cover;
   }
-}
 
-/* --- Portada (inicio): cabe completa en la primera pantalla --- */
-.hero {
-  padding: 2rem 0;
-  display: flex;
-  align-items: center;
-  min-height: calc(100vh - 64px);     /* respaldo para navegadores antiguos */
-  min-height: calc(100svh - 64px);
-}
-.hero .wrap {
-  width: 100%;
-  display: grid;
-  gap: 2rem;
-}
-.hero h1 {
-  font-size: clamp(2rem, 4.2vw, 3.6rem);
-}
-.hero p {
-  font-size: 1.05rem;
-  color: var(--papel);
-}
-.hero h1 em {
-  font-style: normal;
-  color: var(--azafran);
-}
-.hero .btns {
-  margin-top: 1.2rem;
-}
-.hero .media img,
-.hero .media video,
-.hero .ph {
-  max-height: 60vh;
-  object-fit: cover;
-}
-.hero .media figcaption {
-  color: var(--suave-os);
-}
-@media (min-width: 900px) {
-  .hero .wrap {
-    grid-template-columns: 1fr 1fr;
-    align-items: center;
+  .hero::before,
+  .hero::after,
+  .phead::before,
+  .phead::after {
+    content: none;
+  }
+
+  body[data-pagina="inicio"] .hero {
+    background-image: linear-gradient(rgba(38,51,56,.5), rgba(38,51,56,.5)), url("../assets/unity/Patio%20arbol.png");
+    background-position: center, 50% 40%;
+  }
+  body[data-pagina="proyecto"] .phead,
+  body[data-pagina="cultura"] .phead {
+    background-image: linear-gradient(rgba(38,51,56,.5), rgba(38,51,56,.5)), url("../assets/referencias/Parachicos.jpeg");
+    background-position: center, 100% 25%;
+  }
+  body[data-pagina="proceso"] .phead,
+  body[data-pagina="experiencia"] .phead {
+    background-image: linear-gradient(rgba(38,51,56,.5), rgba(38,51,56,.5)), url("../assets/referencias/Silla%20y%20mueble.jpg");
+    background-position: center, 100% 85%;
+  }
+  body[data-pagina="taller"] .phead {
+    background-image: linear-gradient(rgba(38,51,56,.5), rgba(38,51,56,.5)), url("../assets/unity/Patio%20toma.png");
+    background-position: center, 10% 15%;
+  }
+  body[data-pagina="creditos"] .phead {
+    background-image: linear-gradient(rgba(38,51,56,.5), rgba(38,51,56,.5)), url("../assets/logos/Carmesi%20Logo%201.png");
+    background-position: center, 100% 85%;
   }
 }
 
